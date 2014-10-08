@@ -1,0 +1,11 @@
+- hosts: localhost
+  vars:
+  - dbpasswd: localpass
+  - http_proxy: <set proxy host>
+
+  tasks:
+  - include: tasks/packages.yml
+#  - include: tasks/initdb.yml
+  - include: tasks/install-redmine.yml
+
+

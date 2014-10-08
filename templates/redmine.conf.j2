@@ -1,0 +1,37 @@
+<VirtualHost *:80>
+ServerName {{ ansible_all_ipv4_addresses[0] }}
+DocumentRoot /opt/alminium/public
+
+ExpiresActive On
+ExpiresByType application/x-javascript A259200
+ExpiresByType application/javascript A259200
+ExpiresByType image/png A2592000
+ExpiresByType image/jpeg A2592000
+ExpiresByType image/gif A2592000
+ExpiresByType text/css A2592000
+
+</VirtualHost>
+
+Alias /plugin_assets /opt/alminium/public/plugin_assets
+<Directory /opt/alminium/public/plugin_assets>
+  Allow from all
+  PassengerEnabled off
+</Directory>
+
+Alias /stylesheets /opt/alminium/public/stylesheets
+<Directory /opt/alminium/public/stylesheets>
+  Allow from all
+  PassengerEnabled off
+</Directory>
+
+Alias /javascripts /opt/alminium/public/javascripts
+<Directory /opt/alminium/public/javascritps>
+  Allow from all
+  PassengerEnabled off
+</Directory>
+
+Alias /images /opt/alminium/public/images
+<Directory /opt/alminium/public/images>
+  Allow from all
+  PassengerEnabled off
+</Directory>

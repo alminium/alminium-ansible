@@ -1,0 +1,62 @@
+- debug: msg="============= Setup Redmine ====================="
+
+#- name: Checkout Redmine Source Code
+#  git: repo=https://github.com/redmine/redmine.git version=2.5.2 dest=/opt/alminium depth=1
+#  subversion: repo=http://svn.redmine.org/redmine/tags/2.5.2 dest=/opt/alminium
+#  environment:
+#    https_proxy: "{{http_proxy}}"
+
+#- name: Create Redmine Database Configuration
+#  template: src=templates/database.yml.j2 dest=/opt/alminium/config/database.yml owner=apache group=apache
+
+
+- name: Install Depend Gems
+  command: bundle install --path vendor/bundler --without development test postgresql sqlite
+  environment:
+    http_proxy: "{{http_proxy}}"
+    https_proxy: "{{http_proxy}}"
+  args:
+    chdir: /opt/alminium
+
+- command: bundle exec rake generate_secret_token
+  environment:
+    http_proxy: "{{http_proxy}}"
+  args:
+    chdir: /opt/alminium
+
+- command: bundle exec rake db:migrate RAILS_ENV=production
+  environment:
+    http_proxy: "{{http_proxy}}"
+  args:
+    chdir: /opt/alminium
+
+- shell: echo "ja" |bundle exec rake redmine:load_default_data RAILS_ENV=production
+  environment:
+    http_proxy: "{{http_proxy}}"
+  args:
+    chdir: /opt/alminium
+
+- name: Create Apache Configuration
+  template: src=templates/redmine.conf.j2 dest=/etc/httpd/conf.d/redmine.conf owner=apache group=apache
+
+- name: Create Git/Subversion/Mercurial Apache Configuration
+  template: src=templates/vcs.conf.j2 dest=/etc/httpd/conf.d/vcs.conf owner=apache group=apache
+
+- name: Install Passenger
+#  command: bundle exec passenger-install-apache2-module --auto
+  command: passenger-install-apache2-module --auto
+  environment:
+    http_proxy: "{{http_proxy}}"
+  args:
+    chdir: /opt/alminium
+
+- name: Create Passenger Apache Configuration 
+  command: bundle exec passenger-install-apache2-module --snippet > /etc/httpd/conf.d/passenger.conf
+  environment:
+    http_proxy: "{{http_proxy}}"
+  args:
+    chdir: /opt/alminium
+
+- file: path=/etc/httpd/Apache/Authn state=directory owner=apache group=apache
+- copy: src=resources/Redmine.pm dest=/etc/httpd/Apache/Authn
+
