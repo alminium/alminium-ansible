@@ -10,29 +10,10 @@
 #  template: src=templates/database.yml.j2 dest=/opt/alminium/config/database.yml owner=apache group=apache
 
 
-- name: Install Depend Gems
-  command: bundle install --path vendor/bundler --without development test postgresql sqlite
+- script: scripts/install-redmine.sh
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{http_proxy}}"
-  args:
-    chdir: /opt/alminium
-
-- command: bundle exec rake generate_secret_token
-  environment:
-    http_proxy: "{{http_proxy}}"
-  args:
-    chdir: /opt/alminium
-
-- command: bundle exec rake db:migrate RAILS_ENV=production
-  environment:
-    http_proxy: "{{http_proxy}}"
-  args:
-    chdir: /opt/alminium
-
-- shell: echo "ja" |bundle exec rake redmine:load_default_data RAILS_ENV=production
-  environment:
-    http_proxy: "{{http_proxy}}"
   args:
     chdir: /opt/alminium
 
@@ -41,21 +22,6 @@
 
 - name: Create Git/Subversion/Mercurial Apache Configuration
   template: src=templates/vcs.conf.j2 dest=/etc/httpd/conf.d/vcs.conf owner=apache group=apache
-
-- name: Install Passenger
-#  command: bundle exec passenger-install-apache2-module --auto
-  command: passenger-install-apache2-module --auto
-  environment:
-    http_proxy: "{{http_proxy}}"
-  args:
-    chdir: /opt/alminium
-
-- name: Create Passenger Apache Configuration 
-  command: bundle exec passenger-install-apache2-module --snippet > /etc/httpd/conf.d/passenger.conf
-  environment:
-    http_proxy: "{{http_proxy}}"
-  args:
-    chdir: /opt/alminium
 
 - file: path=/etc/httpd/Apache/Authn state=directory owner=apache group=apache
 - copy: src=resources/Redmine.pm dest=/etc/httpd/Apache/Authn
