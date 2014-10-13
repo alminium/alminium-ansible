@@ -1,6 +1,6 @@
 - copy: src=resources/mariadb.repo dest=/etc/yum.repos.d/mariadb.repo
 
-- yum: name="https://github.com/hansode/ruby-rpm/blob/master/6/x86_64/ruby-2.1.2-2.el6.x86_64.rpm?raw=true" state=present
+- yum: name=https://github.com/hansode/ruby-rpm/blob/master/6/x86_64/ruby-2.1.2-2.el6.x86_64.rpm?raw=true&.rpm state=present
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{http_proxy}}"
