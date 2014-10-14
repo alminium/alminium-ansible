@@ -9,5 +9,7 @@
   environment:
     http_proxy: "{{http_proxy}}"
 
+- yum: name=resources/mod_auth_mysql-3.0.0-11.el6.1.redmine.x86_64.rpm
+
 - service: name=mysql state=started
 
