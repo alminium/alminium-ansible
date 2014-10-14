@@ -1,5 +1,8 @@
 #!/bin/sh
 
+cd $1
+
+gem install bundle
 bundle install --path vendor/bundler --without development test postgresql sqlite
 bundle exec rake generate_secret_token
 bundle exec rake db:migrate RAILS_ENV=production

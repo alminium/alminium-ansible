@@ -1,5 +1,5 @@
 - name: Create Database
-  mysql_db: name=alminium state=present
+  mysql_db: name=alminium encoding=utf8 state=present
 
 - name: Create User on MySQL/MariaDB
   mysql_user: name=alminium password="{{dbpasswd}}" priv=alminium.*:ALL state=present

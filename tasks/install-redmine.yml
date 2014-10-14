@@ -10,12 +10,10 @@
   template: src=templates/database.yml.j2 dest=/opt/alminium/config/database.yml owner=apache group=apache
 
 
-- script: scripts/install-redmine.sh
+- script: scripts/install-redmine.sh /opt/alminium
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{http_proxy}}"
-  args:
-    chdir: /opt/alminium
 
 - name: Create Apache Configuration
   template: src=templates/redmine.conf.j2 dest=/etc/httpd/conf.d/redmine.conf owner=apache group=apache
