@@ -1,0 +1,91 @@
+#!/bin/sh
+
+source ${1}
+
+NAME=$name
+VER=$ver
+URL=$url
+
+# File name without extension
+FILE_NAME=`echo ${URL} | sed -e "s/.*\/\(.*$\)/\1/"`
+
+# File extension
+EXT=`echo ${URL} | sed -e "s/.*\.\(.*$\)/\1/"`
+
+CPCMD='cp -fr'
+RMCMD='rm -fr'
+
+# Error handling
+function ERR()
+{
+  echo "{\"failed\" : true, \"msg\" : \""$1"\"}"
+  exit 128
+}
+
+case $EXT in
+  zip)
+    if [ ! -f cache/$FILE_NAME ]
+    then
+      wget -P cache ${URL} || { ERR "Couldn't download: "${URL} ; }
+    fi
+    yes | unzip -q cache/$FILE_NAME || { ERR "Invalid archive file: "${URL} ; }
+    $RMCMD $INSTALL_DIR/plugins/${NAME}
+    mv ${VER} $INSTALL_DIR/plugins/${NAME}
+    rm -f $FILE_NAME
+    ;;
+
+  tgz|gz)
+    if [ ! -f cache/$FILE_NAME ]
+    then
+      wget -P cache ${URL} || { ERR "Couldn't download: "${URL} ; }
+    fi
+    tar zxf cache/$FILE_NAME || { ERR "Invalid archive file: "${URL} ; }
+    $RMCMD $INSTALL_DIR/plugins/${NAME}
+    mv ${VER} $INSTALL_DIR/plugins/${NAME}
+    rm -f $FILE_NAME
+    ;;
+
+  git)
+    if [ ! -d cache/${NAME} ]
+    then
+      git clone ${URL} cache/${NAME} || { ERR "Failed git clone: "${URL} ; }
+    fi
+    if [ -d cache/${NAME} ]
+    then
+      cd cache/${NAME}
+      git checkout ${VER} || { ERR "Failed git checkout: "${URL} ; }
+      cd ../..
+      $RMCMD $INSTALL_DIR/plugins/${NAME}
+      ${CPCMD}a cache/${NAME} $INSTALL_DIR/plugins/
+    fi
+    ;;
+
+  # Bitbucker & Subversion
+  *)
+    if [ ! -d cache/${NAME} ]
+    then
+      if [[ ${URL} =~ "bitbucket.org" ]]
+      then
+        hg clone ${URL} cache/${NAME} || { ERR "Failed hg clone: "${URL} ; }
+        cd cache/${NAME}
+        hg checkout ${VER} || { ERR "Failed hg chekout: "${URL} ; }
+        cd ../..
+      else
+        svn co ${URL} cache/${NAME} || { ERR "Failed svn checkout: "${URL} ; }
+        if [ "${VER}" != "HEAD" ]
+        then
+          cd cache/${NAME}
+          svn update -r ${VER} || { ERR "Failed svn update: "${URL} ; }
+          cd ../..
+        fi
+      fi
+    fi
+  $RMCMD $INSTALL_DIR/plugins/${NAME}
+  ${CPCMD}a cache/${NAME} $INSTALL_DIR/plugins/${NAME}
+  ;;
+esac
+
+
+echo "{\"changed\" : true}"
+
+

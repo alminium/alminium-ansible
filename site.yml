@@ -2,9 +2,18 @@
   vars:
   - dbpasswd: localpass
   - http_proxy: 
+  - env: 
+      http_proxy: "{{http_proxy}}"
+      https_proxy: "{{http_proxy}}"
+      INSTALL_DIR: /opt/alminium
+
   tasks:
   - include: tasks/packages.yml
   - include: tasks/initdb.yml
   - include: tasks/install-redmine.yml
-
+  - include: tasks/install-plugins.yml
+  - script: scripts/init-redmine-plugins.sh
+    environment: env
+  - file: path=/opt/alminium owner=apache group=apache recurse=true
+  - service: name=httpd state=started 
 
