@@ -1,6 +1,7 @@
 - hosts: localhost
   vars:
   - dbpasswd: localpass
+  - LANG: ja
   - http_proxy: 
   - env: 
       http_proxy: "{{http_proxy}}"
@@ -14,6 +15,8 @@
   - include: tasks/install-plugins.yml
   - script: scripts/init-redmine-plugins.sh
     environment: env
+  - copy: src=files/init.mysql dest=/tmp
+  - command: mysql alminium -e "source /tmp/init.mysql"
   - file: path=/opt/alminium owner=apache group=apache recurse=true
   - service: name=httpd state=started 
 
