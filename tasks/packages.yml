@@ -1,4 +1,4 @@
-- copy: src=resources/mariadb.repo dest=/etc/yum.repos.d/mariadb.repo
+- copy: src=files/mariadb.repo dest=/etc/yum.repos.d/mariadb.repo
 
 - yum: name=ruby-libs state=absent
   environment:
@@ -66,7 +66,7 @@
   environment:
     http_proxy: "{{http_proxy}}"
 
-- copy: src=resources/mod_auth_mysql-3.0.0-11.el6.1.redmine.x86_64.rpm dest=/tmp 
+- copy: src=files/mod_auth_mysql-3.0.0-11.el6.1.redmine.x86_64.rpm dest=/tmp 
 - yum: name=/tmp/mod_auth_mysql-3.0.0-11.el6.1.redmine.x86_64.rpm
 
 - service: name=mysql state=started

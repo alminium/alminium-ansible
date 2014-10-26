@@ -1,0 +1,37 @@
+#!/bin/sh
+
+case "$2" in
+
+  git)
+    git --git-dir=$1 update-server-info
+    echo "
+#!/bin/sh
+/opt/alminium/bin/alm-sync-scm
+" > $1/hooks/post-receive
+    chmod u+x $1/hooks/post-receive
+    mv $1/hooks/update.sample $1/hooks/update
+    mv $1/hooks/post-update.sample $1/hooks/post-update
+    echo $1 | sed 's/.*\///' > $1/description
+    git --git-dir=$1 config --bool hooks.allowunannotated true
+    git --git-dir=$1 config --bool receive.denyNonFastforwards true    
+    git --git-dir=$1 config --bool receive.denyDeletes true        
+    git --git-dir=$1 config --bool core.quotepath false        
+  ;;
+
+  svn)
+    echo "#!/bin/sh
+/opt/alminium/bin/alm-sync-scm $1
+" > $1/hooks/post-commit
+    chmod u+x $1/hooks/post-commit
+  ;;
+
+  mercurial)
+  echo "[hooks]
+incoming.redmine=/opt/alminium/bin/alm-sync-scm
+" > $1/.hg/hgrc
+  ;;
+  
+  *)
+  ;;
+  
+esac

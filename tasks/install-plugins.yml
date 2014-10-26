@@ -45,6 +45,10 @@
     ver=redmine-2.1.x
     url=https://github.com/alminium/redmine_scm.git
   environment: env
+- copy: src=files/scm.yml dest=/opt/alminium/config
+- copy: src=files/alm-scm-post-create dest=/opt/alminium/bin
+- copy: src=files/alm-sync-scm dest=/opt/alminium/bin
+- copy: src=files/hooks dest=/opt/alminium
 
 - install-rm-plugin:
     name=redmine_drafts

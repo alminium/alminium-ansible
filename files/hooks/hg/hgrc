@@ -1,0 +1,2 @@
+[hooks]
+incoming.redmine=/opt/alminium/bin/alm-sync-scm

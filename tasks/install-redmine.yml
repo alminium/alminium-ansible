@@ -10,7 +10,7 @@
   template: src=templates/database.yml.j2 dest=/opt/alminium/config/database.yml owner=apache group=apache
 
 
-- script: scripts/install-redmine.sh /opt/alminium
+- script: scripts/install-redmine.sh /opt/alminium {{LANG}}
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{http_proxy}}"
@@ -22,5 +22,7 @@
   template: src=templates/vcs.conf.j2 dest=/etc/httpd/conf.d/vcs.conf owner=apache group=apache
 
 - file: path=/etc/httpd/Apache/Authn state=directory owner=apache group=apache
-- copy: src=resources/Redmine.pm dest=/etc/httpd/Apache/Authn
+- copy: src=files/Redmine.pm dest=/etc/httpd/Apache/Authn
 
+- copy: src=files/hgweb.wsgi dest=/etc/opt/alminium
+- copy: src=files/hgweb.config dest=/etc/opt/alminium

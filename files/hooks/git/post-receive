@@ -1,0 +1,5 @@
+#!/bin/sh
+
+/opt/alminium/bin/alm-sync-scm
+
+
