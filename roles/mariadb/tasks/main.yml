@@ -1,0 +1,19 @@
+- copy: src=files/mariadb.repo dest=/etc/yum.repos.d/mariadb.repo
+
+- yum: name={{ item }} state=installed
+  with_items:
+  - MariaDB
+  - MariaDB-devel
+  - MySQL-python
+  environment:
+    http_proxy: "{{http_proxy}}"
+
+- service: name=mysql state=started
+
+- name: Create Database
+  mysql_db: name=alminium encoding=utf8 state=present
+
+- name: Create User on MySQL/MariaDB
+  mysql_user: name=alminium password="{{dbpasswd}}" priv=alminium.*:ALL state=present
+
+
