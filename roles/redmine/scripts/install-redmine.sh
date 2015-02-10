@@ -11,3 +11,4 @@ gem install passenger --no-rdoc --no-ri
 passenger-install-apache2-module --auto
 passenger-install-apache2-module --snippet > /etc/httpd/conf.d/passenger.conf
 
+cp /opt/alminium/extra/svn/Redmine.pm /etc/httpd/Apache/Authn/

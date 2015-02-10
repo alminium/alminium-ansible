@@ -1,0 +1,94 @@
+- file: path=/etc/httpd/Apache/Authn state=directory owner=apache group=apache
+- file: path=/opt/alminium/bin state=directory owner=root group=root
+
+- yum: name=ruby-libs state=absent
+  environment:
+    http_proxy: "{{http_proxy}}"
+    https_proxy: "{{http_proxy}}"
+
+- yum: name=http://ftp.riken.jp/Linux/fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm
+  environment:
+    http_proxy: "{{http_proxy}}"
+    https_proxy: "{{http_proxy}}"
+
+- yum: name=libyaml
+  environment:
+    http_proxy: "{{http_proxy}}"
+    https_proxy: "{{http_proxy}}"
+
+- yum: name=https://github.com/hansode/ruby-rpm/blob/master/6/x86_64/ruby-2.1.2-2.el6.x86_64.rpm?raw=true&.rpm state=present
+  environment:
+    http_proxy: "{{http_proxy}}"
+    https_proxy: "{{http_proxy}}"
+
+- yum: name={{ item }} state=installed
+  with_items:
+  - unzip
+  - ImageMagick
+  - ImageMagick-devel
+  - httpd,httpd-devel
+  - sudo
+  - gcc-c++
+  - git
+  - subversion
+  - mercurial
+  - make
+  - patch
+  - apr-devel
+  - openssl-devel
+  - curl-devel
+  - zlib-devel
+  - mod_auth_mysql
+  - mod_wsgi
+  - mod_perl
+  - perl-Apache-DBI
+  - perl-Digest-SHA
+  - libical
+  - python-docutils
+  - readline-devel
+  - ncurses-devel
+  - gdbm-devel
+  - tcl-devel
+  - openssl-devel
+  - db4-devel
+  - byacc
+  - libyaml-devel
+  - glibc-devel
+  - ImageMagick-devel
+  - ipa-pgothic-fonts
+  - libxml2-devel
+  - libxslt-devel
+  - sqlite-devel
+  - libffi-devel
+  environment:
+    http_proxy: "{{http_proxy}}"
+
+- copy: src=files/mod_auth_mysql-3.0.0-11.el6.1.redmine.x86_64.rpm dest=/tmp 
+- yum: name=/tmp/mod_auth_mysql-3.0.0-11.el6.1.redmine.x86_64.rpm
+
+- debug: msg="============= Setup Redmine ====================="
+
+- name: Checkout Redmine Source Code
+  git: repo=https://github.com/redmine/redmine.git version=2.6.1 dest=/opt/alminium depth=1
+  environment:
+    https_proxy: "{{http_proxy}}"
+
+- name: Create Redmine Database Configuration
+  template: src=templates/database.yml.j2 dest=/opt/alminium/config/database.yml owner=apache group=apache
+
+- script: scripts/install-redmine.sh /opt/alminium {{LANG}}
+  environment:
+    http_proxy: "{{http_proxy}}"
+    https_proxy: "{{http_proxy}}"
+
+- name: Create Apache Configuration
+  template: src=templates/redmine.conf.j2 dest=/etc/httpd/conf.d/redmine.conf owner=apache group=apache
+
+- copy: src=files/alm-sync-scm dest=/opt/alminium/bin 
+
+- file: path=/opt/alminium owner=apache group=apache recurse=true
+
+- copy: src=files/init.mysql dest=/tmp
+- command: mysql alminium -e "source /tmp/init.mysql"
+
+- service: name=httpd state=started

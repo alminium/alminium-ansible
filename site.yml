@@ -8,6 +8,13 @@
       https_proxy: "{{http_proxy}}"
       INSTALL_DIR: /opt/alminium
 
+  roles:
+  - mariadb
+  - redmine
+  - vcs
+  - redmine-plugins
+
+
   tasks:
   - include: tasks/packages.yml
   - include: tasks/initdb.yml
@@ -17,6 +24,4 @@
     environment: env
   - copy: src=files/init.mysql dest=/tmp
   - command: mysql alminium -e "source /tmp/init.mysql"
-  - file: path=/opt/alminium owner=apache group=apache recurse=true
-  - service: name=httpd state=started 
 

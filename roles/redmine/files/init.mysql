@@ -1,0 +1,102 @@
+charset utf8;
+
+/*********************************************************************
+ * トラッカーの設定
+ ********************************************************************/
+
+/*** サポートをタスクに変更 ***/
+UPDATE trackers SET name='タスク' WHERE name='サポート';
+
+/*** ステータスの解決をレビューに変更 ***/
+UPDATE  issue_statuses SET name='レビュー' WHERE name='解決';
+
+/*********************************************************************
+ * Redmineの初期設定
+ ********************************************************************/
+REPLACE INTO settings(name,value,updated_on) VALUES ('ui_theme','gitmike',current_date); 
+REPLACE INTO settings(name,value,updated_on) VALUES ('app_title','ALMinium',current_date);
+REPLACE INTO settings(name,value,updated_on) VALUES ('default_language','ja',current_date);
+REPLACE INTO settings(name,value,updated_on) VALUES ('gravatar_enabled',1,current_date);
+REPLACE INTO settings(name,value,updated_on) VALUES ('sys_api_enabled',1,current_date);
+REPLACE INTO settings(name,value,updated_on) VALUES ('sys_api_key','',current_date);
+REPLACE INTO settings(name,value,updated_on) VALUES ('default_projects_modules','--- \n- issue_tracking\n- news\n- wiki\n- repository\n',current_date);
+REPLACE INTO settings(name,value,updated_on) VALUES ('text_formatting','markdown',current_date);
+REPLACE INTO settings(name,value,updated_on) VALUES ('cache_formatted_text',1,current_date);
+REPLACE INTO settings(name,value,updated_on) VALUES ('user_format','lastname_firstname',current_date);     
+REPLACE INTO settings(name,value,updated_on) VALUES ('commit_logtime_enabled',1,current_date);     
+REPLACE INTO settings(name,value,updated_on) VALUES ('commit_logtime_activity_id',0,current_date);
+REPLACE INTO settings(name,value,updated_on) VALUES ('plugin_redmine_spent_time_column','--- !map:HashWithIndifferentAccess\nshow_bottom_summary_line_spent_hours: "1"\nshow_bottom_summary_line_estimated_hours: "1"\nshow_bottom_summary_line_on_issuelists: "1"\nenable_spent_hours_column: "1"\nshow_bottom_summary_line_backlogs_remaining_hours: "1"',current_date);
+REPLACE INTO settings(name,value,updated_on) VALUES ('issue_done_ratio','issue_status',current_date);
+REPLACE INTO settings(name,value,updated_on) VALUES ('commit_fix_done_ratio','100',current_date);
+REPLACE INTO settings(name,value,updated_on) VALUES ('commit_fix_status_id','5',current_date);
+REPLACE INTO settings(name,value,updated_on) VALUES ('commit_fix_keywords','fixes,closes',current_date);
+REPLACE INTO settings(name,value,updated_on) VALUES ('plugin_redmine_xls_export','--- !map:HashWithIndifferentAccess \nissues_limit: "0"\ndate_format: YYYYMMDD\nexport_name: export_name\n',current_date);
+UPDATE enumerations SET is_default = 1 WHERE name = '開発作業';
+REPLACE INTO settings(name,value,updated_on) VALUES ('welcome_text','
+ALMinium
+========
+
+※Jenkinsをインストールした場合は、[http[s]://&lt;ホスト&gt;/jenkins/からアクセス](/jenkins/)できます。
+
+　近年注目を集めるチケットシステムですが、環境構築をするとなるとそれなりに面倒です。チケットシステムの一つであるRedmineをインストールするためには、Rubyの知識が必要であったり、また、GitやSubversionなどのバージョン管理システムを利用するには、その知識が必要であったりととにかく面倒です。「ALMinium」は、めんどくさがり屋のための、プロジェクト管理構築ツールです。
+
+特徴
+----
+
+次のような特徴があります。
+
+### Redmineとそれに必要なMySQLやRubyライブラリを一括してセットアップ
+
+Redmineに必要なソフトウェアを一括でセットアップすることができます。もう、「Rubyがわからないので、Redmineなんてつかえませーん。ぷんぷくりーん。」と言うこともなくなります。また、日本語環境や各プラグインの基本的な設定も自動的に行ってくれるので、設定でつまずくこともありません。
+
+### バージョン管理システム(Subversion/Git)も同時にセットアップ
+
+バージョン管理システムは、もはやソフトウェア開発にとって必須と言えるでしょう。しかしながら、mod_dav_svnやgit-http-backendの設定は、新入社員では難しいことでしょう。とある(以下略)はバージョン管理システムも一緒にセットアップしてくれます。
+
+### Redmineとバージョン管理システ厶(Subversion/Git)のアカウントの連携
+
+Redmineは、データベースで独自のアカウント管理機構を持っています。LDAPなどを利用することもできますが、正直素人には面倒杉ます。とある(以下略）では、Git/SubversionでもChiRedmineのアカウントを利用して認証と、アクセス権の設定を行うことができます。
+
+### Jenkinsのセットアップ
+
+ALMinium 2.2以降では、継続的インテグレーションを行うJenkinsも一緒にインストールすることができます。
+
+### 便利なプラグインも一緒にセットアップ
+
+便利なプラグインも一緒にインストールしてくれ、より簡単に利用できるようになります。
+
+* アイコンによる綺麗なテーマ
+* 標準の使いにくいWikiをGitHub互換のMarkdown形式を利用できるようにするRedcarpetプラグイン
+* チェンジセットからのコードレビューを支援するCode Reviewプラグイン
+* アジャイル(スクラム)開発をするためのBacklogsプラグイン
+* CVSのインポートやMS Projectのファイルのインポートプラグイン
+
+使い方
+------
+
+デフォルトでは管理者が定義されています。管理者ユーザとして、下記のユーザ名、パスワードでログインできます。
+
+<table>
+<tr>
+<th>ユーザ名</th><td>admin</td>
+</tr>
+<tr>
+<th>パスワード</th><td>admin</td>
+</tr>
+</table>
+
+プロジェクトの作成は、管理者でログインしてプロジェクトの作成から行ってください。
+
+リポジトリの作成は、プロジェクト作成時にSCMを指定するか、プロジェクトのリポジトリ設定画面から行ってください。サブリポジトリを利用する場合は、リポジトリパスを/var/opt/alminium/xxx/&lt;プロジェクト名&gt;.&lt;識別子&gt;という名前にしてください。
+
+
+管理者・開発者のロールのユーザを同名のRedmineプロジェクトに追加することにより、コミット権を与えることができます。例えば、testrepoという名前のリポジトリに対して、testrepoという名前のRedmineプロジェクトを作成します。アクセスさせたいユーザを「開発者」ロールでtestrepoプロジェクトに追加すれば、リポジトリへのコミット(プッシュ)権限を付与することができます。
+
+Jenkinsをインストールした場合は、下記のURLからアクセスできます。
+
+* [http[s]://&lt;ALMiniumをインストールしたホスト名&gt;/jenkins/](/jenkins/)
+
+ユーザ名、パスワードはRedmineに登録したユーザ名、アカウントを利用してログインしてください(初期状態ではユーザ名admin、パスワードadmin)。
+
+',current_date);
+UPDATE users SET language='ja' WHERE login='admin';

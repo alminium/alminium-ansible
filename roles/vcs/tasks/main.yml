@@ -1,0 +1,10 @@
+- yum: name={{ item }} state=installed
+  with_items:
+  - mod_dav_svn
+  environment:
+    http_proxy: "{{http_proxy}}"
+
+- name: Create Git/Subversion/Mercurial Apache Configuration
+  template: src=templates/vcs.conf.j2 dest=/etc/httpd/conf.d/vcs.conf owner=apache group=apache
+- copy: src=files/hgweb.wsgi dest=/etc/opt/alminium
+- copy: src=files/hgweb.config dest=/etc/opt/alminium

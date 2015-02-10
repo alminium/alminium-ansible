@@ -92,3 +92,8 @@
     url=https://github.com/mikoto20000/redmine_git_branch_hook.git
   environment: env
 
+- script: scripts/init-redmine-plugins.sh
+
+- copy: src=files/init.mysql dest=/tmp
+- command: mysql alminium -e "source /tmp/init.mysql"
+
