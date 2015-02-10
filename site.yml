@@ -1,27 +1,22 @@
 - hosts: localhost
   vars:
   - dbpasswd: localpass
+  ## os_family should debian or centos
+  - os_family: centos
+  - install_dir: /opt/alminium
   - LANG: ja
   - http_proxy: 
+
   - env: 
       http_proxy: "{{http_proxy}}"
       https_proxy: "{{http_proxy}}"
-      INSTALL_DIR: /opt/alminium
+      INSTALL_DIR: "{{install_dir}"
+
+  vars_file:
+  - vars/{{ os_family }}.yml
 
   roles:
   - mariadb
   - redmine
   - vcs
   - redmine-plugins
-
-
-  tasks:
-  - include: tasks/packages.yml
-  - include: tasks/initdb.yml
-  - include: tasks/install-redmine.yml
-  - include: tasks/install-plugins.yml
-  - script: scripts/init-redmine-plugins.sh
-    environment: env
-  - copy: src=files/init.mysql dest=/tmp
-  - command: mysql alminium -e "source /tmp/init.mysql"
-
