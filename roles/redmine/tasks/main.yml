@@ -1,6 +1,3 @@
-- file: path=/etc/httpd/Apache/Authn state=directory owner=apache group=apache
-- file: path=/opt/alminium/bin state=directory owner=root group=root
-
 - yum: name=ruby-libs state=absent
   environment:
     http_proxy: "{{http_proxy}}"
@@ -60,11 +57,14 @@
   - libxslt-devel
   - sqlite-devel
   - libffi-devel
+  - wget
   environment:
     http_proxy: "{{http_proxy}}"
 
-- copy: src=files/mod_auth_mysql-3.0.0-11.el6.1.redmine.x86_64.rpm dest=/tmp 
+- copy: src=mod_auth_mysql-3.0.0-11.el6.1.redmine.x86_64.rpm dest=/tmp 
 - yum: name=/tmp/mod_auth_mysql-3.0.0-11.el6.1.redmine.x86_64.rpm
+
+- file: path=/etc/httpd/Apache/Authn state=directory owner=apache group=apache
 
 - debug: msg="============= Setup Redmine ====================="
 
@@ -74,21 +74,23 @@
     https_proxy: "{{http_proxy}}"
 
 - name: Create Redmine Database Configuration
-  template: src=templates/database.yml.j2 dest=/opt/alminium/config/database.yml owner=apache group=apache
+  template: src=database.yml.j2 dest=/opt/alminium/config/database.yml owner=apache group=apache
 
-- script: scripts/install-redmine.sh /opt/alminium {{LANG}}
+- script: install-redmine.sh /opt/alminium {{LANG}}
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{http_proxy}}"
 
 - name: Create Apache Configuration
-  template: src=templates/redmine.conf.j2 dest=/etc/httpd/conf.d/redmine.conf owner=apache group=apache
-
-- copy: src=files/alm-sync-scm dest=/opt/alminium/bin 
+  template: src=redmine.conf.j2 dest=/etc/httpd/conf.d/redmine.conf owner=apache group=apache
 
 - file: path=/opt/alminium owner=apache group=apache recurse=true
+- file: path=/opt/alminium/bin owner=apache group=apache recurse=true
+- copy: src=alm-sync-scm dest=/opt/alminium/bin 
 
-- copy: src=files/init.mysql dest=/tmp
+
+
+- copy: src=init.mysql dest=/tmp
 - command: mysql alminium -e "source /tmp/init.mysql"
 
 - service: name=httpd state=started

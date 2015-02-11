@@ -1,4 +1,4 @@
-- copy: src=files/mariadb.repo dest=/etc/yum.repos.d/mariadb.repo
+- copy: src=mariadb.repo dest=/etc/yum.repos.d/mariadb.repo
 
 - yum: name={{ item }} state=installed
   with_items:

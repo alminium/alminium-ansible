@@ -45,10 +45,8 @@
     ver=redmine-2.1.x
     url=https://github.com/alminium/redmine_scm.git
   environment: env
-- copy: src=files/scm.yml dest=/opt/alminium/config
-- copy: src=files/alm-scm-post-create dest=/opt/alminium/bin
-- copy: src=files/alm-sync-scm dest=/opt/alminium/bin
-- copy: src=files/hooks dest=/opt/alminium
+- copy: src=scm.yml dest=/opt/alminium/config
+- copy: src=alm-scm-post-create dest=/opt/alminium/bin
 
 - install-rm-plugin:
     name=redmine_drafts
@@ -92,8 +90,8 @@
     url=https://github.com/mikoto20000/redmine_git_branch_hook.git
   environment: env
 
-- script: scripts/init-redmine-plugins.sh
+- script: init-redmine-plugins.sh
 
-- copy: src=files/init.mysql dest=/tmp
+- copy: src=init.mysql dest=/tmp
 - command: mysql alminium -e "source /tmp/init.mysql"
 
