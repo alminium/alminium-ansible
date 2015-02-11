@@ -93,4 +93,8 @@
 - copy: src=init.mysql dest=/tmp
 - command: mysql alminium -e "source /tmp/init.mysql"
 
-- service: name=httpd state=started
+- selinux: state=disabled
+- service: name=httpd state=started enabled=yes
+
+# TODO: iptables should enabled 
+- service: name=iptables state=stopped enabled=no

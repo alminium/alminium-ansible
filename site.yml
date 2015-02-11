@@ -16,7 +16,7 @@
 #  - vars/{{ os_family }}.yml
 
   roles:
-  - mariadb
-  - redmine
-  - vcs
+#  - mariadb
+#  - redmine
+#  - vcs
   - redmine-plugins
