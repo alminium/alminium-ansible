@@ -12,11 +12,12 @@
       https_proxy: "{{http_proxy}}"
       INSTALL_DIR: "{{install_dir}}"
 
-#  vars_file:
-#  - vars/{{ os_family }}.yml
+  vars_files:
+  - vars/{{ os_family }}.yml
+
 
   roles:
-#  - mariadb
-#  - redmine
-#  - vcs
-  - redmine-plugins
+  - mariadb
+  - redmine
+  - vcs
+#  - redmine-plugins

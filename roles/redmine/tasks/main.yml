@@ -58,6 +58,7 @@
   - sqlite-devel
   - libffi-devel
   - wget
+  - libselinux-python # for selinux ansible module
   environment:
     http_proxy: "{{http_proxy}}"
 
@@ -84,11 +85,8 @@
 - name: Create Apache Configuration
   template: src=redmine.conf.j2 dest=/etc/httpd/conf.d/redmine.conf owner=apache group=apache
 
-- file: path=/opt/alminium owner=apache group=apache recurse=true
-- file: path=/opt/alminium/bin owner=apache group=apache recurse=true
+- file: path=/opt/alminium/bin state=directory owner=apache group=apache recurse=true
 - copy: src=alm-sync-scm dest=/opt/alminium/bin 
-
-
 
 - copy: src=init.mysql dest=/tmp
 - command: mysql alminium -e "source /tmp/init.mysql"
