@@ -82,6 +82,8 @@
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{http_proxy}}"
 
+- file: path=/opt/alminium/tmp state=directory owner=apache group=apache recurse=true mode=a+rwx
+
 - name: Create Apache Configuration
   template: src=redmine.conf.j2 dest=/etc/httpd/conf.d/redmine.conf owner=apache group=apache
 
