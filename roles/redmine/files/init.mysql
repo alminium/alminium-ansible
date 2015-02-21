@@ -19,6 +19,7 @@ REPLACE INTO settings(name,value,updated_on) VALUES ('default_language','ja',cur
 REPLACE INTO settings(name,value,updated_on) VALUES ('gravatar_enabled',1,current_date);
 REPLACE INTO settings(name,value,updated_on) VALUES ('sys_api_enabled',1,current_date);
 REPLACE INTO settings(name,value,updated_on) VALUES ('sys_api_key','',current_date);
+REPLACE INTO settings(name,value,updated_on) VALUES ('rest_api_enabled',1,current_date);
 REPLACE INTO settings(name,value,updated_on) VALUES ('default_projects_modules','--- \n- issue_tracking\n- news\n- wiki\n- repository\n',current_date);
 REPLACE INTO settings(name,value,updated_on) VALUES ('text_formatting','markdown',current_date);
 REPLACE INTO settings(name,value,updated_on) VALUES ('cache_formatted_text',1,current_date);

@@ -1,6 +1,7 @@
 - yum: name={{ item }} state=installed
   with_items:
   - mod_dav_svn
+  - perl-Class-DBI-mysql
   environment:
     http_proxy: "{{http_proxy}}"
 
@@ -9,4 +10,20 @@
 - copy: src=hgweb.wsgi dest=/etc/opt/alminium
 - copy: src=hgweb.config dest=/etc/opt/alminium
 - copy: src=hooks dest=/opt/alminium
+- file: path=/var/opt/alminium/git state=directory recurse=yes owner=apache group=apache
+- file: path=/var/opt/alminium/svn state=directory recurse=yes owner=apache group=apache
+- file: path=/var/opt/alminium/hg  state=directory recurse=yes owner=apache group=apache
+
+- name: Create Repository
+  command: > 
+    mysql alminium -e 
+    "INSERT INTO 
+              repositories
+                (project_id,url,type,log_encoding,extra_info,identifier,is_default,created_on) 
+            VALUES
+                (1,'/var/opt/alminium/git/test','Repository::Git',NULL,'---\nextra_report_last_commit: \'0\'', 'test', 0, current_date);"
+- name: Create Git repository
+  command: >
+    git init --bare --share /var/opt/alminium/git/test
+
 
