@@ -1,4 +1,4 @@
-- hosts: localhost
+- hosts: target
   vars:
   - dbpasswd: localpass
   ## os_family should debian or centos

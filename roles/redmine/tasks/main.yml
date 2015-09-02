@@ -3,7 +3,11 @@
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{http_proxy}}"
 
-- yum: name=http://ftp.riken.jp/Linux/fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm
+#- yum: name=http://ftp.riken.jp/Linux/fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm
+#  environment:
+#    http_proxy: "{{http_proxy}}"
+#    https_proxy: "{{http_proxy}}"
+- yum: name=epel-release
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{http_proxy}}"
@@ -13,10 +17,13 @@
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{http_proxy}}"
 
-- yum: name=https://github.com/hansode/ruby-rpm/blob/master/6/x86_64/ruby-2.1.2-2.el6.x86_64.rpm?raw=true&.rpm state=present
+- yum: name={{ item }}
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{http_proxy}}"
+  with_items:
+  - ruby
+  - ruby-devel
 
 - yum: name={{ item }} state=installed
   with_items:
@@ -35,7 +42,7 @@
   - openssl-devel
   - curl-devel
   - zlib-devel
-  - mod_auth_mysql
+#  - mod_auth_mysql
   - mod_wsgi
   - mod_perl
   - perl-Apache-DBI
@@ -62,10 +69,29 @@
   environment:
     http_proxy: "{{http_proxy}}"
 
-- copy: src=mod_auth_mysql-3.0.0-11.el6.1.redmine.x86_64.rpm dest=/tmp 
-- yum: name=/tmp/mod_auth_mysql-3.0.0-11.el6.1.redmine.x86_64.rpm
+#- copy: src=mod_auth_mysql-3.0.0-11.el6.1.redmine.x86_64.rpm dest=/tmp 
+#- yum: name=/tmp/mod_auth_mysql-3.0.0-11.el6.1.redmine.x86_64.rpm
 
 - file: path=/etc/httpd/Apache/Authn state=directory owner=apache group=apache
+
+- debug: msg="============= Setup Passenger ====================="
+
+- get_url: url=https://oss-binaries.phusionpassenger.com/yum/definitions/el-passenger.repo dest=/etc/yum.repos.d/passenger.repo validate_certs=no
+  environment:
+    http_proxy: "{{http_proxy}}"
+    https_proxy: "{{http_proxy}}"
+
+- rpm_key: state=present key=https://packagecloud.io/gpg.key
+  environment:
+    http_proxy: "{{http_proxy}}"
+    https_proxy: "{{http_proxy}}"
+
+
+
+- yum: name=mod_passenger
+  environment:
+    http_proxy: "{{http_proxy}}"
+    https_proxy: "{{http_proxy}}"
 
 - debug: msg="============= Setup Redmine ====================="
 
@@ -98,7 +124,8 @@
 - service: name=httpd state=started enabled=yes
 
 # TODO: iptables should enabled 
-- service: name=iptables state=stopped enabled=no
+#- service: name=iptables state=stopped enabled=no
+- service: name=firewalld state=stopped enabled=no
 
 - name: Create Test Project
   command: > 
@@ -106,7 +133,8 @@
          -H "Content-Type: application/json"
          -d '{"project": {"name": "test", "identifier": "test", "is_public": "true"}}'
          http://127.0.0.1/projects.json
-  failed_when: "error in command_result.stdout"
+#  failed_when: "error in command_result.stdout"
+  ignore_errors: yes
   tags:
    - no_reinit
 
@@ -116,6 +144,7 @@
          -H "Content-Type: application/json"
          -d '{"membership": {"user_id": "1", "role_ids": [3]}}'
          http://127.0.0.1/projects/test/memberships.json
-  failed_when: "error in command_result.stdout"
+#  failed_when: "error in command_result.stdout"
+  ignore_errors: yes
   tags:
    - no_reinit

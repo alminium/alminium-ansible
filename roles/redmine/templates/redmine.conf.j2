@@ -12,26 +12,31 @@ ExpiresByType text/css A2592000
 
 </VirtualHost>
 
+<Directory /opt/alminium/public>
+  Require all granted
+</Directory>
+
+
 Alias /plugin_assets /opt/alminium/public/plugin_assets
 <Directory /opt/alminium/public/plugin_assets>
-  Allow from all
+  Require all granted
   PassengerEnabled off
 </Directory>
 
 Alias /stylesheets /opt/alminium/public/stylesheets
 <Directory /opt/alminium/public/stylesheets>
-  Allow from all
+  Require all granted
   PassengerEnabled off
 </Directory>
 
 Alias /javascripts /opt/alminium/public/javascripts
 <Directory /opt/alminium/public/javascritps>
-  Allow from all
+  Require all granted
   PassengerEnabled off
 </Directory>
 
 Alias /images /opt/alminium/public/images
 <Directory /opt/alminium/public/images>
-  Allow from all
+  Require all granted
   PassengerEnabled off
 </Directory>

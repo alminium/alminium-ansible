@@ -1,7 +1,8 @@
 - yum: name={{ item }} state=installed
   with_items:
   - mod_dav_svn
-  - perl-Class-DBI-mysql
+#  - perl-Class-DBI-mysql
+  - perl-DBD-MySQL
   environment:
     http_proxy: "{{http_proxy}}"
 

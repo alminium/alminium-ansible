@@ -1,7 +1,6 @@
 # Subversionの設定
 PerlLoadModule Apache::Authn::Redmine
 <Location /svn/>
-    PerlAccessHandler Apache::Authn::Redmine::access_handler
     PerlAuthenHandler Apache::Authn::Redmine::authen_handler
 
     DAV svn
@@ -11,6 +10,7 @@ PerlLoadModule Apache::Authn::Redmine
 
     AuthType Basic
     AuthName Subversion
+    AuthUserFile /dev/null
 
 # for Redmine Authentication
     RedmineDSN "DBI:mysql:database=alminium;host=localhost"
@@ -26,11 +26,11 @@ SetEnv GIT_HTTP_EXPORT_ALL
 ScriptAlias /git/ /usr/libexec/git-core/git-http-backend/
 
 <Location /git/>
-    PerlAccessHandler Apache::Authn::Redmine::access_handler
     PerlAuthenHandler Apache::Authn::Redmine::authen_handler
 
     AuthType Basic
     AuthName Git
+    AuthUserFile /dev/null
 
 # for Redmine Authentication
     RedmineDSN "DBI:mysql:database=alminium;host=localhost"
