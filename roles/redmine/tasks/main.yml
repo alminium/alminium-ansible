@@ -26,6 +26,7 @@
   - httpd,httpd-devel
   - sudo
   - gcc-c++
+  - patch
   - git
   - subversion
   - mercurial
