@@ -8,8 +8,8 @@ cd $INSTALL_DIR
 # for Hudson
 mv plugins/redmine_hudson/Gemfile plugins/redmine_hudson/Gemfile.org
 
-bundle install --path vendor/bundler --without development test postgresql sqlite
-
+export RAILS_ENV=production
+bundle install --path vendor/bundler --without development test postgresql qlite
 bundle exec rake redmine:plugins:migrate
 bundle exec rake generate_secret_token
 bundle exec rake db:migrate
