@@ -85,7 +85,7 @@
 - debug: msg="============= Setup Redmine ====================="
 
 - name: Checkout Redmine Source Code
-  git: repo=https://github.com/redmine/redmine.git version=2.6.1 dest=/opt/alminium depth=1
+  git: repo=https://github.com/redmine/redmine.git version=2.6.1 dest=/opt/alminium
   environment:
     https_proxy: "{{http_proxy}}"
 
