@@ -22,6 +22,11 @@ function ERR()
   exit 128
 }
 
+if [ -z $NAME ]
+then
+  ERR "install-rm-plugin module needs name option."
+fi
+
 case $EXT in
   zip)
     if [ ! -f cache/$FILE_NAME ]
@@ -31,7 +36,7 @@ case $EXT in
     yes | unzip -q cache/$FILE_NAME || { ERR "Invalid archive file: "${URL} ; }
     $RMCMD $INSTALL_DIR/plugins/${NAME}
     mv ${VER} $INSTALL_DIR/plugins/${NAME}
-    rm -f $FILE_NAME
+    $RMCMD -f $FILE_NAME
     ;;
 
   tgz|gz)
@@ -42,7 +47,7 @@ case $EXT in
     tar zxf cache/$FILE_NAME || { ERR "Invalid archive file: "${URL} ; }
     $RMCMD $INSTALL_DIR/plugins/${NAME}
     mv ${VER} $INSTALL_DIR/plugins/${NAME}
-    rm -f $FILE_NAME
+    $RMCMD -f $FILE_NAME
     ;;
 
   git)
