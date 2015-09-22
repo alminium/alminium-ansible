@@ -29,41 +29,17 @@
   with_items:
   - unzip
   - ImageMagick
-  - ImageMagick-devel
-  - httpd,httpd-devel
+  - httpd
   - sudo
-  - gcc-c++
   - git
   - subversion
   - mercurial
-  - make
-  - patch
-  - apr-devel
-  - openssl-devel
-  - curl-devel
-  - zlib-devel
-#  - mod_auth_mysql
-  - mod_wsgi
+   - mod_wsgi
   - mod_perl
   - perl-Apache-DBI
   - perl-Digest-SHA
   - libical
   - python-docutils
-  - readline-devel
-  - ncurses-devel
-  - gdbm-devel
-  - tcl-devel
-  - openssl-devel
-  - db4-devel
-  - byacc
-  - libyaml-devel
-  - glibc-devel
-  - ImageMagick-devel
-  - ipa-pgothic-fonts
-  - libxml2-devel
-  - libxslt-devel
-  - sqlite-devel
-  - libffi-devel
   - wget
   - libselinux-python # for selinux ansible module
   environment:
@@ -75,20 +51,20 @@
 - file: path=/etc/httpd/Apache/Authn state=directory owner=apache group=apache
 
 - debug: msg="============= Setup Passenger ====================="
-
-- get_url: url=https://oss-binaries.phusionpassenger.com/yum/definitions/el-passenger.repo dest=/etc/yum.repos.d/passenger.repo validate_certs=no
+- name: Install Passenger
+  get_url: url=https://oss-binaries.phusionpassenger.com/yum/definitions/el-passenger.repo dest=/etc/yum.repos.d/passenger.repo validate_certs=no
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{http_proxy}}"
 
-- rpm_key: state=present key=https://packagecloud.io/gpg.key
+- rpm_key: state=present key=https://packagecloud.io/gpg.key validate_certs=no
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{http_proxy}}"
 
 
 
-- yum: name=mod_passenger
+- yum: name=mod_passenger disable_gpg_check=yes
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{http_proxy}}"
@@ -122,10 +98,29 @@
 
 - selinux: state=disabled
 - service: name=httpd state=started enabled=yes
+  when: ansible_virtualization_type != "docker"
 
 # TODO: iptables should enabled 
 #- service: name=iptables state=stopped enabled=no
+#  when: docker is undefined
 - service: name=firewalld state=stopped enabled=no
+  when: ansible_virtualization_type != "docker"
+
+- name: Docker
+  yum: name=python-pip
+  when: ansible_virtualization_type == "docker"
+
+- pip: name=supervisor
+
+  when: ansible_virtualization_type == "docker"
+
+- copy: src=supervisord.conf dest=/etc/supervisord.conf
+  when: ansible_virtualization_type == "docker"
+
+- command: /usr/bin/supervisord -c /etc/supervisord.conf
+  async: 15
+  poll: 0
+  when: ansible_virtualization_type == "docker"
 
 - name: Create Test Project
   command: > 
