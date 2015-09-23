@@ -20,4 +20,4 @@
   - mariadb
   - redmine
   - vcs
-#  - redmine-plugins
+  - redmine-plugins

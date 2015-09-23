@@ -28,12 +28,12 @@
 #    url=https://bitbucket.org/okamototk/redmine_hudson
 #  environment: env
 
-- install-rm-plugin:
-    name=redmine_backlogs
-    ver=feature/redmine3
-    url=https://github.com/macotier/redmine_backlogs.git
-#    url=https://github.com/backlogs/redmine_backlogs.git
-  environment: env
+#- install-rm-plugin:
+#    name=redmine_backlogs
+#    ver=feature/redmine3
+#    url=https://github.com/macotier/redmine_backlogs.git
+##    url=https://github.com/backlogs/redmine_backlogs.git
+#  environment: env
 
 #- install-rm-plugin:
 #    name=redmine_spent_time_column
@@ -48,7 +48,7 @@
 #    url=https://github.com/alminium/redmine_scm.git
   environment: env
 - copy: src=scm.yml dest=/opt/alminium/config
-- copy: src=alm-scm-post-create dest=/opt/alminium/bin
+- copy: src=alm-scm-post-create dest=/opt/alminium/bin mode=755
 
 #- install-rm-plugin:
 #    name=redmine_drafts
@@ -93,6 +93,7 @@
 #  environment: env
 
 - script: init-redmine-plugins.sh
+- file: path=/opt/alminium owner=apache group=apache
 
 - copy: src=init.mysql dest=/tmp
 - command: mysql alminium -e "source /tmp/init.mysql"
