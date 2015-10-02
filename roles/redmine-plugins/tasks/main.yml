@@ -47,6 +47,7 @@
 #    ver=redmine-2.1.x
 #    url=https://github.com/alminium/redmine_scm.git
   environment: env
+
 - copy: src=scm.yml dest=/opt/alminium/config
 - copy: src=alm-scm-post-create dest=/opt/alminium/bin mode=755
 

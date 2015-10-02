@@ -5,8 +5,12 @@
   - os_family: centos
   - install_dir: /opt/alminium
   - LANG: ja
-  - http_proxy: 
-
+  - proxy_host: 
+  - proxy_port: 
+  - http_proxy: http://{{proxy_host}}:{{proxy_port}}/
+    when: proxy_host is defined
+#  - http_proxy: 
+#    when: proxy_host is undefined
   - env: 
       http_proxy: "{{http_proxy}}"
       https_proxy: "{{http_proxy}}"
@@ -17,6 +21,7 @@
 
 
   roles:
+  - proxyconfig
   - mariadb
   - redmine
   - vcs
