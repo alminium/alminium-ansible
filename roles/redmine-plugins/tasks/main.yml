@@ -1,8 +1,8 @@
-- install-rm-plugin:
-    name=redmine_xls_export
-    ver=features
-    url=https://github.com/two-pack/redmine_xls_export.git
-  environment: env
+#- install-rm-plugin:
+#    name=redmine_xls_export
+#    ver=features
+#    url=https://github.com/two-pack/redmine_xls_export.git
+#  environment: env
 
 #- install-rm-plugin:
 #    name=redmine_plugin_views_revisions
@@ -81,11 +81,11 @@
 #    url=https://github.com/drakontia/redmine_charts.git
 #  environment: env
 
-- install-rm-plugin:
-    name=redmine_local_avatars
-    ver=master
-    url=https://github.com/luckval/redmine_local_avatars.git
-  environment: env
+#- install-rm-plugin:
+#   name=redmine_local_avatars
+#   ver=master
+#   url=https://github.com/luckval/redmine_local_avatars.git
+# environment: env
 
 #- install-rm-plugin:
 #    name=redmine_git_branch_hook
