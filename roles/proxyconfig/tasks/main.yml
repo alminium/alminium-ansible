@@ -1,0 +1,21 @@
+- set_fact:
+    http_proxy: "http://{{ proxy_host }}:{{ proxy_port }}/"
+  when: (proxy_host is defined) and (proxy_host != None) and 
+        (proxy_port is defined) and (proxy_port != None)
+
+- debug: msg="set http_proxy {{http_proxy}}"
+  when: http_proxy is defined
+
+- set_fact:
+    env:
+      INSTALL_DIR: "{{env.INSTALL_DIR}}"
+      http_proxy: "{{http_proxy}}"
+      https_proxy: "{{http_proxy}}"
+  when: http_proxy is defined
+
+- lineinfile: dest=/etc/yum.conf
+    regexp="^http_proxy="
+    line="http_proxy={{http_proxy}}"
+  when: http_proxy is defined
+
+

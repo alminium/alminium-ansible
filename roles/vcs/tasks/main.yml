@@ -3,8 +3,7 @@
   - mod_dav_svn
 #  - perl-Class-DBI-mysql
   - perl-DBD-MySQL
-  environment:
-    http_proxy: "{{http_proxy}}"
+
 
 - name: Create Git/Subversion/Mercurial Apache Configuration
   template: src=vcs.conf.j2 dest=/etc/httpd/conf.d/vcs.conf owner=apache group=apache

@@ -1,25 +1,21 @@
 - hosts: localhost
   vars:
+  - redmine_ver: 3.2.0
   - dbpasswd: localpass
   ## os_family should debian or centos
   - os_family: centos
   - install_dir: /opt/alminium
   - LANG: ja
   - proxy_host: 
-  - proxy_port: 
-  - http_proxy: http://{{proxy_host}}:{{proxy_port}}/
-    when: proxy_host is defined
-#  - http_proxy: 
-#    when: proxy_host is undefined
+  - proxy_port:
+    # "http_proxy" is configured automaticalily. DO NOT Edit it!.
   - env: 
-      http_proxy: "{{http_proxy}}"
-      https_proxy: "{{http_proxy}}"
       INSTALL_DIR: "{{install_dir}}"
+    
 
   vars_files:
   - vars/{{ os_family }}.yml
-
-
+  tasks:
   roles:
   - proxyconfig
   - mariadb

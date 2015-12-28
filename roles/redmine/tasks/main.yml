@@ -1,26 +1,10 @@
 - yum: name=ruby-libs state=absent
-  environment:
-    http_proxy: "{{http_proxy}}"
-    https_proxy: "{{http_proxy}}"
 
-#- yum: name=http://ftp.riken.jp/Linux/fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm
-#  environment:
-#    http_proxy: "{{http_proxy}}"
-#    https_proxy: "{{http_proxy}}"
 - yum: name=epel-release
-  environment:
-    http_proxy: "{{http_proxy}}"
-    https_proxy: "{{http_proxy}}"
 
 - yum: name=libyaml
-  environment:
-    http_proxy: "{{http_proxy}}"
-    https_proxy: "{{http_proxy}}"
 
 - yum: name={{ item }}
-  environment:
-    http_proxy: "{{http_proxy}}"
-    https_proxy: "{{http_proxy}}"
   with_items:
   - ruby
   - ruby-devel
@@ -54,8 +38,6 @@
   - libxslt-devel
   - sqlite-devel
   - libffi-devel
-  environment:
-    http_proxy: "{{http_proxy}}"
 
 #- copy: src=mod_auth_mysql-3.0.0-11.el6.1.redmine.x86_64.rpm dest=/tmp 
 #- yum: name=/tmp/mod_auth_mysql-3.0.0-11.el6.1.redmine.x86_64.rpm
@@ -65,38 +47,27 @@
 - debug: msg="============= Setup Passenger ====================="
 - name: Install Passenger
   get_url: url=https://oss-binaries.phusionpassenger.com/yum/definitions/el-passenger.repo dest=/etc/yum.repos.d/passenger.repo validate_certs=no
-  environment:
-    http_proxy: "{{http_proxy}}"
-    https_proxy: "{{http_proxy}}"
+  environment: "{{env}}"
 
 - lineinfile: dest=/etc/yum.repos.d/passenger.repo state=present regexp=^repo_gpgcheck=1 line=repo_gpgcheck=0
 - lineinfile: dest=/etc/yum.repos.d/passenger.repo state=present regexp=^repo_gpgcheck=1 line=repo_gpgcheck=0
 
 - rpm_key: state=present key=https://packagecloud.io/gpg.key validate_certs=no
-  environment:
-    http_proxy: "{{http_proxy}}"
-    https_proxy: "{{http_proxy}}"
-
+  environment: "{{env}}"
 
 - yum: name=mod_passenger disable_gpg_check=yes
-  environment:
-    http_proxy: "{{http_proxy}}"
-    https_proxy: "{{http_proxy}}"
 
 - debug: msg="============= Setup Redmine ====================="
 
 - name: Checkout Redmine Source Code
-  git: repo=https://github.com/redmine/redmine.git version=3.1.1 dest=/opt/alminium
-  environment:
-    https_proxy: "{{http_proxy}}"
+  git: repo=https://github.com/redmine/redmine.git version={{redmine_ver}} dest=/opt/alminium
+  environment: "{{env}}"
 
 - name: Create Redmine Database Configuration
   template: src=database.yml.j2 dest=/opt/alminium/config/database.yml owner=apache group=apache
 
 - script: install-redmine.sh /opt/alminium {{LANG}}
-  environment:
-    http_proxy: "{{http_proxy}}"
-    https_proxy: "{{http_proxy}}"
+  environment: "{{env}}"
 
 - name: Create Apache Configuration
   template: src=redmine.conf.j2 dest=/etc/httpd/conf.d/redmine.conf owner=apache group=apache
