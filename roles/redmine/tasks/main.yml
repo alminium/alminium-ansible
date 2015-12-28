@@ -30,6 +30,7 @@
   - libselinux-python # for selinux ansible module
   - make
   - gcc
+  - which
   - openssl-devel
   - curl-devel
   - zlib-devel
