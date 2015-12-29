@@ -113,9 +113,13 @@
   command: > 
     curl --user admin:admin -L -k
          -H "Content-Type: application/json"
-         -d '{"project": {"name": "test", "identifier": "test", "is_public": "true"}}'
+         -d '{"project": {"name": "test", "identifier": "test", "is_public": "true", "tracker_ids": [1,2,3]}}'
          https://127.0.0.1/projects.json
 #  failed_when: "error in command_result.stdout"
+  register: result
+  until: result.rc == 9
+  retries: 3
+  delay: 15
   ignore_errors: yes
   tags:
    - no_reinit
