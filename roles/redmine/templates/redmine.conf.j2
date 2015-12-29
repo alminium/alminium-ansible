@@ -1,6 +1,10 @@
-<VirtualHost *:80>
+<VirtualHost *:443>
 ServerName {{ ansible_all_ipv4_addresses[0] }}
 DocumentRoot /opt/alminium/public
+
+SSLEngine on
+SSLCertificateFile /etc/pki/tls/certs/localhost.crt
+SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
 
 ExpiresActive On
 ExpiresByType application/x-javascript A259200

@@ -14,6 +14,7 @@
   - unzip
   - ImageMagick
   - httpd
+  - mod_ssl
   - sudo
   - gcc-c++
   - patch
@@ -110,10 +111,10 @@
 
 - name: Create Test Project
   command: > 
-    curl --user admin:admin -L
+    curl --user admin:admin -L -k
          -H "Content-Type: application/json"
          -d '{"project": {"name": "test", "identifier": "test", "is_public": "true"}}'
-         http://127.0.0.1/projects.json
+         https://127.0.0.1/projects.json
 #  failed_when: "error in command_result.stdout"
   ignore_errors: yes
   tags:
@@ -121,10 +122,10 @@
 
 - name: Add admin as test project member
   command: >
-    curl --user admin:admin -L
+    curl --user admin:admin -L -k
          -H "Content-Type: application/json"
          -d '{"membership": {"user_id": "1", "role_ids": [3]}}'
-         http://127.0.0.1/projects/test/memberships.json
+         https://127.0.0.1/projects/test/memberships.json
 #  failed_when: "error in command_result.stdout"
   ignore_errors: yes
   tags:
