@@ -4,6 +4,11 @@
 #  - perl-Class-DBI-mysql
   - perl-DBD-MySQL
 
+- name: Setup Wandisco Git Repository
+  yum: name=http://opensource.wandisco.com/centos/7/git/x86_64/wandisco-git-release-{{wandisco_git_repo_ver}}.noarch.rpm state=installed
+
+- name: Update Git with Wandisco version
+  yum: name=git
 
 - name: Create Git/Subversion/Mercurial Apache Configuration
   template: src=vcs.conf.j2 dest=/etc/httpd/conf.d/vcs.conf owner=apache group=apache
