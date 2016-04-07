@@ -38,14 +38,14 @@ ScriptAlias /git/ /usr/libexec/git-core/git-http-backend/
     RedmineDbPass "{{dbpasswd}}"
     RedmineGitSmartHttp yes
 
-    Require valid-user                              
+    Require valid-user
 </Location>
 
 # DAVを使う場合
 #Alias /git /var/opt/alminium/git
 #<Location /git>
 #    Options Indexes
-#    DAV on         
+#    DAV on
 #    AuthType Basic
 #    AuthName user
 
@@ -60,7 +60,7 @@ ScriptAlias /git/ /usr/libexec/git-core/git-http-backend/
 #    AuthMySQLPasswordField hashed_password
 #    AuthMySQLPwEncryption sha1
 #
-#    Require valid-user                              
+#    Require valid-user
 #</Location>
 
 # Mercurialの設定
@@ -69,7 +69,7 @@ WSGIScriptAlias /hg /etc/opt/alminium/hgweb.wsgi
 <Location /hg/>
    PerlAccessHandler Apache::Authn::Redmine::access_handler
    PerlAuthenHandler Apache::Authn::Redmine::authen_handler
-    
+
     WSGIApplicationGroup %{GLOBAL}
     AuthType Basic
     AuthName Mercurial
@@ -78,6 +78,6 @@ WSGIScriptAlias /hg /etc/opt/alminium/hgweb.wsgi
     RedmineDSN "DBI:mysql:database=alminium;host=localhost"
     RedmineDbUser "alminium"
     RedmineDbPass "{{dbpasswd}}"
-    
+
     Require valid-user
 </Location>

@@ -14,7 +14,7 @@
     name=redmine_importer
     ver=master
     url=https://github.com/zh/redmine_importer.git
-  environment: env
+  environment: '{{env}}'
 
 #- install-rm-plugin:
 #    name=redmine_code_review
@@ -47,7 +47,7 @@
     ver=HEAD
 #    ver=redmine-2.1.x
 #    url=https://github.com/alminium/redmine_scm.git
-  environment: env
+  environment: '{{env}}'
 
 - copy: src=scm.yml dest=/opt/alminium/config
 - copy: src=alm-scm-post-create dest=/opt/alminium/bin mode=755

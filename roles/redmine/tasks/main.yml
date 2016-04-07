@@ -45,23 +45,25 @@
   - sqlite-devel
   - libffi-devel
 
-#- copy: src=mod_auth_mysql-3.0.0-11.el6.1.redmine.x86_64.rpm dest=/tmp 
-#- yum: name=/tmp/mod_auth_mysql-3.0.0-11.el6.1.redmine.x86_64.rpm
-
-- file: path=/etc/httpd/Apache/Authn state=directory owner=apache group=apache
+- name: Create module directory for Redmine authentication
+  file: path=/etc/httpd/Apache/Authn state=directory owner=apache group=apache
 
 - debug: msg="============= Setup Passenger ====================="
 - name: Install Passenger
   get_url: url=https://oss-binaries.phusionpassenger.com/yum/definitions/el-passenger.repo dest=/etc/yum.repos.d/passenger.repo validate_certs=no
   environment: "{{env}}"
 
-- lineinfile: dest=/etc/yum.repos.d/passenger.repo state=present regexp=^repo_gpgcheck=1 line=repo_gpgcheck=0
-- lineinfile: dest=/etc/yum.repos.d/passenger.repo state=present regexp=^repo_gpgcheck=1 line=repo_gpgcheck=0
+- name: Disable gpg check for passenger repository
+  lineinfile: dest=/etc/yum.repos.d/passenger.repo state=present regexp=^repo_gpgcheck=1 line=repo_gpgcheck=0
+- name: Disable gpg check for passenger source repository
+  lineinfile: dest=/etc/yum.repos.d/passenger.repo state=present regexp=^repo_gpgcheck=1 line=repo_gpgcheck=0
 
-- rpm_key: state=present key=https://packagecloud.io/gpg.key validate_certs=no
+- name: Install passenger's gpg key
+  rpm_key: state=present key=https://packagecloud.io/gpg.key validate_certs=no
   environment: "{{env}}"
 
-- yum: name=mod_passenger disable_gpg_check=yes
+- name: Install passenger
+  yum: name=mod_passenger disable_gpg_check=yes
 
 - debug: msg="============= Setup Redmine ====================="
 
@@ -124,7 +126,7 @@
   when: ansible_virtualization_type == "docker"
 
 - name: Create Test Project
-  command: > 
+  command: >
     curl --user admin:admin -L -k
          -H "Content-Type: application/json"
          -d '{"project": {"name": "test", "identifier": "test", "is_public": "true", "tracker_ids": [1,2,3]}}'

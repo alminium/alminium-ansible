@@ -93,7 +93,7 @@ UPDATE roles SET roles.permissions=concat(roles.permissions,'- :reset_sprint
 /*********************************************************************
  * Redmineの初期設定
  ********************************************************************/
-REPLACE INTO settings(name,value,updated_on) VALUES ('ui_theme','gitmike',current_date); 
+REPLACE INTO settings(name,value,updated_on) VALUES ('ui_theme','gitmike',current_date);
 REPLACE INTO settings(name,value,updated_on) VALUES ('app_title','ALMinium',current_date);
 REPLACE INTO settings(name,value,updated_on) VALUES ('default_language','ja',current_date);
 REPLACE INTO settings(name,value,updated_on) VALUES ('gravatar_enabled',1,current_date);
@@ -102,8 +102,8 @@ REPLACE INTO settings(name,value,updated_on) VALUES ('sys_api_key','',current_da
 REPLACE INTO settings(name,value,updated_on) VALUES ('default_projects_modules','--- \n- issue_tracking\n- news\n- wiki\n- repository\n',current_date);
 REPLACE INTO settings(name,value,updated_on) VALUES ('text_formatting','markdown',current_date);
 REPLACE INTO settings(name,value,updated_on) VALUES ('cache_formatted_text',1,current_date);
-REPLACE INTO settings(name,value,updated_on) VALUES ('user_format','lastname_firstname',current_date);     
-REPLACE INTO settings(name,value,updated_on) VALUES ('commit_logtime_enabled',1,current_date);     
+REPLACE INTO settings(name,value,updated_on) VALUES ('user_format','lastname_firstname',current_date);
+REPLACE INTO settings(name,value,updated_on) VALUES ('commit_logtime_enabled',1,current_date);
 REPLACE INTO settings(name,value,updated_on) VALUES ('commit_logtime_activity_id',0,current_date);
 REPLACE INTO settings(name,value,updated_on) VALUES ('plugin_redmine_spent_time_column','--- !map:HashWithIndifferentAccess\nshow_bottom_summary_line_spent_hours: "1"\nshow_bottom_summary_line_estimated_hours: "1"\nshow_bottom_summary_line_on_issuelists: "1"\nenable_spent_hours_column: "1"\nshow_bottom_summary_line_backlogs_remaining_hours: "1"',current_date);
 REPLACE INTO settings(name,value,updated_on) VALUES ('issue_done_ratio','issue_status',current_date);

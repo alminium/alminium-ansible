@@ -10,7 +10,7 @@ production:
    git:
      path: /var/opt/alminium/git
      git: /usr/bin/git
-     options: --bare 
+     options: --bare
      url: ", http(s)://ホスト名/git"
    mercurial:
      path: /var/opt/alminium/hg

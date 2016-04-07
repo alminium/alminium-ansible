@@ -93,7 +93,7 @@ esac
 if [ -f $INSTALL_DIR/plugins/${NAME}/Gemfile ]
 then
   echo "excc bundler: " $NAME >>/tmp/log
-  pushd . 
+  pushd .
   cd $INSTALL_DIR/plugins/${NAME}
   bundle install --path $INSTALL_DIR/vendor/bundler --without development test postgresql sqlite >> /tmp/log
   popd
