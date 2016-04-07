@@ -1,16 +1,20 @@
-- yum: name=ruby-libs state=absent
+- name: Remove ruby-libs
+  yum: name=ruby-libs state=absent
 
-- yum: name=epel-release
+- name: Setup EPEL repository
+  yum: name=epel-release
 
-- yum: name=libyaml
-
-- yum: name={{ item }}
+- name: Install Ruby
+  yum: name={{ item }}
   with_items:
   - ruby
   - ruby-devel
 
-- yum: name={{ item }} state=installed
+- name: Install RPMs
+  yum: name={{ item }} state=installed
   with_items:
+  - libyaml
+  - firewalld
   - unzip
   - ImageMagick
   - httpd
@@ -68,26 +72,36 @@
 - name: Create Redmine Database Configuration
   template: src=database.yml.j2 dest=/opt/alminium/config/database.yml owner=apache group=apache
 
-- script: install-redmine.sh /opt/alminium {{LANG}}
+- name: Run Redmine Install Script
+  script: install-redmine.sh /opt/alminium {{LANG}}
   environment: "{{env}}"
 
 - name: Create Apache Configuration
   template: src=redmine.conf.j2 dest=/etc/httpd/conf.d/redmine.conf owner=apache group=apache
 
-- file: path=/opt/alminium/bin state=directory owner=apache group=apache recurse=true
-- copy: src=alm-sync-scm dest=/opt/alminium/bin 
+- name: Create bin directory for ALMinium
+  file: path=/opt/alminium/bin state=directory owner=apache group=apache recurse=true
 
-- name: Create Dir
+- name: Copy repository sync script
+  copy: src=alm-sync-scm dest=/opt/alminium/bin
+
+- name: Create temp directory
   file: path=/opt/alminium/tmp state=directory owner=apache group=apache mode=777
 
-- copy: src=init.mysql dest=/tmp
-- command: mysql alminium -e "source /tmp/init.mysql"
+- name: Copy database initialize script
+  copy: src=init.mysql dest=/tmp
 
-- selinux: state=disabled
-- service: name=httpd state=started enabled=yes
+- name: Initialize Database
+  command: mysql -u {{dbuser}} --password={{dbpasswd}} -h {{groups['database'][0]}} {{dbname}} -e "source /tmp/init.mysql"
+
+- name: Disable SELinux
+  selinux: state=disabled
+
+- name: Start httpd service
+  service: name=httpd state=restarted enabled=yes
   when: ansible_virtualization_type != "docker"
 
-# TODO: iptables should enabled 
+# TODO: iptables should enabled
 #- service: name=iptables state=stopped enabled=no
 #  when: docker is undefined
 - service: name=firewalld state=stopped enabled=no

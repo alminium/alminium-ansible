@@ -1,0 +1,12 @@
+redmine_ver: 3.2.1
+wandisco_git_repo_ver: 7-2
+dbname: aldb
+dbuser: aluser
+dbpasswd: localpass
+os_family: centos
+install_dir: /opt/alminium
+LANG: ja
+proxy_host:
+proxy_port:
+env:
+  INSTALL_DIR: "{{install_dir}}"

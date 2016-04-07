@@ -4,8 +4,8 @@ production-sqlite:
 
 production:
   adapter: mysql2
-  database: alminium
-  host: localhost
-  username: alminium
+  database: {{dbname}}
+  host: {{groups['database'][0]}}
+  username: {{dbuser}}
   password: {{dbpasswd}}
   encoding: utf8

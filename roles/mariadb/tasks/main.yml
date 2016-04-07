@@ -9,9 +9,9 @@
 - service: name=mysql state=started
 
 - name: Create Database
-  mysql_db: name=alminium encoding=utf8 state=present
+  mysql_db: name={{dbname}} encoding=utf8 state=present
 
 - name: Create User on MySQL/MariaDB
-  mysql_user: name=alminium password="{{dbpasswd}}" priv=alminium.*:ALL state=present
+  mysql_user: name={{dbuser}} host='*' password="{{dbpasswd}}" priv={{dbname}}.*:ALL state=present
 
 
