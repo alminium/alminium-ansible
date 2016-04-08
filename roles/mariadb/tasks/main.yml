@@ -12,6 +12,4 @@
   mysql_db: name={{dbname}} encoding=utf8 state=present
 
 - name: Create User on MySQL/MariaDB
-  mysql_user: name={{dbuser}} host='*' password="{{dbpasswd}}" priv={{dbname}}.*:ALL state=present
-
-
+  mysql_user: name={{dbuser}} host='{{groups['redmine'][0]}}' password="{{dbpasswd}}" priv={{dbname}}.*:ALL state=present
