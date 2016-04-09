@@ -2,7 +2,7 @@ redmine_ver: 3.2.1
 wandisco_git_repo_ver: 7-2
 dbname: alminium
 dbuser: alminium
-dbpasswd: dblpass
+dbpasswd: dbpass
 os_family: centos
 install_dir: /opt/alminium
 LANG: ja
