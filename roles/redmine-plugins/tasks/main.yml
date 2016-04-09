@@ -43,10 +43,10 @@
 
 - install-rm-plugin:
     name=redmine_scm
-    url=http://subversion.andriylesyuk.com/scm-creator/
-    ver=HEAD
-#    ver=redmine-2.1.x
-#    url=https://github.com/alminium/redmine_scm.git
+    ver=redmine-3.2.x
+    url=https://github.com/alminium/redmine_scm.git
+#    url=http://subversion.andriylesyuk.com/scm-creator/
+#    ver=HEAD
   environment: '{{env}}'
 
 - copy: src=scm.yml dest=/opt/alminium/config
