@@ -32,13 +32,16 @@ Ansibleの知識があれば、従来のALMiniumに比べ簡単にカスタマ�
 
 プロキシの設定が必要な場合は、group_vars/allファイルのproxy_host/proxy_portにプロキシ情報を記述してください。
 
-正常にインストールが完了すると、https://<ホスト名>/　にアクセスすると、ALMiniumのトップページが表示されます。
-
-
 ### 例
 
     proxy_host: proxy.mycompany.com
     proxy_port: 8080
+
+正常にインストールが完了すると、https://<ホスト名>/　にアクセスすると、ALMiniumのトップページが表示されます。
+初期設定では、ユーザ名「admin」、パスワード「admin」で管理者権限でログインすることができます。また、testプロジェクトと
+Gitリポジトリが作成されており、試すことができます。
+
+
 
 マルチホストへのインストール
 ----------------------------
@@ -99,3 +102,39 @@ RDSなど既にあるデータベースを利用
 |--------------|------------|
 |パスワード    |dbpass      |
 |--------------|------------|
+
+
+Dockerイメージのビルド・実行
+----------------------------
+
+group_vars/all, site.ymlなどを適宜カスタマイズ(特にプロキシの設定)して、docker buildコマンドを実行します。
+
+# docker build -t mysite/alminium  .
+
+プロキシを利用する場合は、下記のようにプロキシを指定してビルドを実行します。
+
+    # docker build -t mysite/alminium \
+       --build-arg http_proxy=http://proxyhost:8080/ \
+       --build-arg https_proxy=http://proxyhost:8080/ .
+
+環境にもよりますが、イメージの作成は、20分程度かかる場合があります。
+下記のAnsible実行のメッセージで止まっても慌てずお茶などを飲みながら
+ゆっくりお待ちください。
+
+    # docker build  ...
+    ...
+    Step 10 : RUN ansible-playbook site.yml -i hosts
+     ---> Running in 141722d955ba
+
+
+イメージの作成が完了したら、
+
+    # docker run --name alminium -p 8443:443 mysite/alminium
+    
+で実行できます。コマンドを指定しなくても自動的にMariaDBやApache
+が起動します。
+
+   http://<DockerホストのIP:8443>/ 
+
+にアクセスして、ALMiniumの画面が表示されれれば無事起動完了です。
+
