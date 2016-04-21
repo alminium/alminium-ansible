@@ -13,6 +13,9 @@ RUN ansible-playbook site.yml -i hosts
 WORKDIR /
 RUN rm -fr alminium-ansible
 COPY supervisord.conf /etc/supervisord.conf
+RUN chmod u+w /etc/sudoers
+RUN sed -i 's/Defaults    requiretty/#Defaults    requiretty/' /etc/sudoers
+RUN chmod u-w /etc/sudoers
 
 EXPOSE 443
 
