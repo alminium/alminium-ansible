@@ -94,6 +94,13 @@
 #    url=https://github.com/mikoto20000/redmine_git_branch_hook.git
 #  environment: env
 
+- install-rm-plugin:
+    name=redmine_oauth_provider
+    ver=master
+    url=https://github.com/suer/redmine_oauth_provider.git
+  environment: env
+
+
 - script: init-redmine-plugins.sh
 - file: path=/opt/alminium owner=apache group=apache
 
