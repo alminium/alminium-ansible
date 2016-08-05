@@ -1,5 +1,7 @@
 #!/bin/sh
 
+source /opt/rh/rh-ruby23/enable
+
 cd $1
 
 gem install bundle

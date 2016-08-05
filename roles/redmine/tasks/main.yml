@@ -1,18 +1,22 @@
 - name: Remove ruby-libs
   yum: name=ruby-libs state=absent
 
-- name: Setup EPEL repository
+- name: Setup Additional repository
   yum: name=epel-release
+  with_items:
+  - epel-release
+  - centos-release-scl
 
 - name: Install Ruby
   yum: name={{ item }}
   with_items:
-  - ruby
-  - ruby-devel
+  - rh-ruby23-ruby
+  - rh-ruby23-ruby-devel
 
 - name: Install RPMs
   yum: name={{ item }} state=installed
   with_items:
+  - deltarpm
   - libyaml
   - firewalld
   - unzip
@@ -27,12 +31,11 @@
   - mercurial
   - mod_wsgi
   - mod_perl
-  - perl-Apache-DBI
   - perl-Digest-SHA
   - libical
   - python-docutils
   - wget
-  - libselinux-python # for selinux ansible module
+  - libselinux-python
   - make
   - gcc
   - which
@@ -44,26 +47,35 @@
   - libxslt-devel
   - sqlite-devel
   - libffi-devel
+  - httpd-devel
+  - apr-devel 
 
 - name: Create module directory for Redmine authentication
   file: path=/etc/httpd/Apache/Authn state=directory owner=apache group=apache
 
 - debug: msg="============= Setup Passenger ====================="
+#- name: Install Passenger
+#  get_url: url=https://oss-binaries.phusionpassenger.com/yum/definitions/el-passenger.repo dest=/etc/yum.repos.d/passenger.repo validate_certs=no
+#  environment: "{{env}}"
+
+#- name: Disable gpg check for passenger repository
+#  lineinfile: dest=/etc/yum.repos.d/passenger.repo state=present regexp=^repo_gpgcheck=1 line=repo_gpgcheck=0
+#- name: Disable gpg check for passenger source repository
+# lineinfile: dest=/etc/yum.repos.d/passenger.repo state=present regexp=^repo_gpgcheck=1 line=repo_gpgcheck=0
+
+#- name: Install passenger's gpg key
+#  rpm_key: state=present key=https://packagecloud.io/gpg.key validate_certs=no
+#  environment: "{{env}}"
+
+#- name: Install passenger
+#  yum: name=mod_passenger disable_gpg_check=yes
+
 - name: Install Passenger
-  get_url: url=https://oss-binaries.phusionpassenger.com/yum/definitions/el-passenger.repo dest=/etc/yum.repos.d/passenger.repo validate_certs=no
+  command: scl enable rh-ruby23 "gem install passenger --no-rdoc --no-ri"
   environment: "{{env}}"
 
-- name: Disable gpg check for passenger repository
-  lineinfile: dest=/etc/yum.repos.d/passenger.repo state=present regexp=^repo_gpgcheck=1 line=repo_gpgcheck=0
-- name: Disable gpg check for passenger source repository
-  lineinfile: dest=/etc/yum.repos.d/passenger.repo state=present regexp=^repo_gpgcheck=1 line=repo_gpgcheck=0
-
-- name: Install passenger's gpg key
-  rpm_key: state=present key=https://packagecloud.io/gpg.key validate_certs=no
-  environment: "{{env}}"
-
-- name: Install passenger
-  yum: name=mod_passenger disable_gpg_check=yes
+- name: Build mod_passenger
+  command: scl enable rh-ruby23 "passenger-install-apache2-module --auto"
 
 - debug: msg="============= Setup Redmine ====================="
 
@@ -99,31 +111,33 @@
 - name: Disable SELinux
   selinux: state=disabled
 
-- name: Start httpd service
-  service: name=httpd state=restarted enabled=yes
-  when: ansible_virtualization_type != "docker"
+- block: # Not Docker
+  - name: Start httpd service
+    service: name=httpd state=restarted enabled=yes
 
 # TODO: iptables should enabled
 #- service: name=iptables state=stopped enabled=no
 #  when: docker is undefined
-- service: name=firewalld state=stopped enabled=no
-  when: ansible_virtualization_type != "docker"
+  - service: name=firewalld state=stopped enabled=no
 
-- name: Docker
-  yum: name=python-pip
-  when: ansible_virtualization_type == "docker"
+  when: (ansible_virtualization_type is undefined) or
+        (ansible_virtualization_type != "docker")
 
-- pip: name=supervisor
+- block: # For Docker
 
-  when: ansible_virtualization_type == "docker"
+  - name: Docker
+    yum: name=python-pip
 
-- copy: src=supervisord.conf dest=/etc/supervisord.conf
-  when: ansible_virtualization_type == "docker"
+  - pip: name=supervisor
 
-- command: /usr/bin/supervisord -c /etc/supervisord.conf
-  async: 15
-  poll: 0
-  when: ansible_virtualization_type == "docker"
+  - copy: src=supervisord.conf dest=/etc/supervisord.conf
+
+  - command: /usr/bin/supervisord -c /etc/supervisord.conf
+    async: 15
+    poll: 0
+
+  when: (ansible_virtualization_type is defined) and
+        (ansible_virtualization_type == "docker")
 
 - name: Create Test Project
   command: >

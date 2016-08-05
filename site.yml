@@ -5,7 +5,7 @@
 
 - hosts: redmine
   vars:
-  - redmine_ver: 3.2.1
+  - redmine_ver: 3.3.0
   ## os_family should debian or centos
   - os_family: centos
   - install_dir: /opt/alminium

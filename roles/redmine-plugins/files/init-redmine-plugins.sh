@@ -9,6 +9,8 @@ INSTALL_DIR=/opt/alminium
 
 cd $INSTALL_DIR
 
+source /opt/rh/rh-ruby23/enable
+
 # for Hudson
 mv plugins/redmine_hudson/Gemfile plugins/redmine_hudson/Gemfile.org
 
