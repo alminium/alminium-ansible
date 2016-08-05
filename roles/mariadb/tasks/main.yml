@@ -6,6 +6,12 @@
   - MariaDB-devel
   - MySQL-python
 
+- lineinfile: 
+    dest: /etc/my.cnf.d/server.cnf 
+    insertafter: ^\[server\]
+    state: present
+    line: "character-set-server = utf8"
+
 - service: name=mysql state=started
 
 - name: Create Database
