@@ -78,7 +78,7 @@
   command: scl enable rh-ruby23 "passenger-install-apache2-module --auto"
 
 - name: Install Passenger Config
-  command: passenger-install-apache2-module --no-compile --snippet > /etc/httpd/conf.modules.d/00-passenger.conf
+  shell: scl enable rh-ruby23 "passenger-install-apache2-module --no-compile --snippet > /etc/httpd/conf.modules.d/00-passenger.conf"
 
 - debug: msg="============= Setup Redmine ====================="
 
