@@ -14,8 +14,8 @@
   when: http_proxy is defined
 
 - lineinfile: dest=/etc/yum.conf
-    regexp="^http_proxy="
-    line="http_proxy={{http_proxy}}"
+    regexp="^proxy="
+    line="proxy={{http_proxy}}"
   when: http_proxy is defined
 
 
